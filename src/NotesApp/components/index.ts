@@ -5,4 +5,5 @@ export * from './SideBar';
 export * from './Loader';
 export * from './ImageGalery';
 export * from './AppTextField';
+export * from './SideBarItem';
 

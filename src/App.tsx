@@ -3,14 +3,13 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { FirebaseAuth } from './firebase/config';
+import { loading } from './loading/loading';
 import { Loader } from './NotesApp/components';
 import { AppRouter } from './routes/AppRouter';
 import { login } from './store/auth';
 import { AppTheme } from './theme';
 
 function App() {
-  const { page, isLoading, pokemons = [] } = useSelector((state: any) => state.pokemon);
-  const { status } = useSelector((state: any) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -24,7 +23,7 @@ function App() {
 
   return (
     <AppTheme>
-      {(isLoading || status === 'checking') && <Loader />}
+      {loading() && <Loader />}
       <AppRouter />
     </AppTheme>
   );

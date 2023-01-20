@@ -43,7 +43,7 @@ export const AppBarMenu = (props: any) => {
   const handleLogout = () => {
     setAnchorEl(null);
     dispatch(logout({ errorMessage: null }));
-    logoutFirebase()
+    logoutFirebase();
     navigate('/auth/login');
   };
 
@@ -113,14 +113,18 @@ export const AppBarMenu = (props: any) => {
             </>
           ) : null} */}
 
-          <SearchBar inputSearch={(e: string) => props.inputSearch(e)} />
+          {/* <SearchBar inputSearch={(e: string) => props.inputSearch(e)} /> */}
           <Box sx={{ mr: 1 }} />
-          <Box sx={{ display: 'flex' }}>
-            <IconButton size='large' edge='end' aria-label='account of current user' aria-controls={menuId} aria-haspopup='true' onClick={handleProfileMenuOpen} color='inherit'>
-              {/* <AccountCircle /> */}
-              <Avatar src={photoURL} alt={displayName} />
-            </IconButton>
-          </Box>
+          <IconButton
+            size='large'
+            sx={{ position: 'absolute', right: 0 }}
+            aria-label='account of current user'
+            aria-controls={menuId}
+            aria-haspopup='true'
+            onClick={handleProfileMenuOpen}
+            color='inherit'>
+            <Avatar src={photoURL} alt={displayName} />
+          </IconButton>
         </Toolbar>
       </AppBar>
       {renderMenu}

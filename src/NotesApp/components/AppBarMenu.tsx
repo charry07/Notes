@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logoutFirebase } from '../../firebase/providers';
 import { logout } from '../../store/auth';
+import { clearNotesLogout, setActiveNote } from '../../store/Notes';
 import { toggleBar } from '../../store/slices';
 import { SearchBar } from './SearchBar';
 
@@ -44,6 +45,7 @@ export const AppBarMenu = (props: any) => {
     setAnchorEl(null);
     dispatch(logout({ errorMessage: null }));
     logoutFirebase();
+    dispatch(clearNotesLogout());
     navigate('/auth/login');
   };
 

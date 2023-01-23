@@ -5,11 +5,12 @@ import { startLoadingNotes } from '../../store/Notes';
 import { AppBarMenu, Footer, SideBar } from '../components';
 
 export const NotesLayout = ({ children }: any) => {
+  const { active } = useSelector((state: any) => state.notes);
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(startLoadingNotes());
-  }, []);
+  }, [active]);
 
   return (
     <Box>

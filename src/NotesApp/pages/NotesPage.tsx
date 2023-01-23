@@ -16,14 +16,16 @@ export const NotesPage = () => {
   return (
     <NotesLayout>
       {active ? <NoteView /> : <NothingSelectedView />}
-      <IconButton
-        title='Agregar nueva nota'
-        disabled={isSaving}
-        size='large'
-        onClick={onClickNewNote}
-        sx={{ border: '2px solid white', backgroundColor: 'primary.main', position: 'fixed', right: 50, bottom: 60 }}>
-        <AddOutlined />
-      </IconButton>
+      {active?.id != '' && active?.title != '' && active?.body != '' && (
+        <IconButton
+          title='Agregar nueva nota'
+          disabled={isSaving}
+          size='large'
+          onClick={onClickNewNote}
+          sx={{ border: '2px solid white', backgroundColor: 'primary.main', position: 'fixed', right: 50, bottom: 60 }}>
+          <AddOutlined />
+        </IconButton>
+      )}
     </NotesLayout>
   );
 };

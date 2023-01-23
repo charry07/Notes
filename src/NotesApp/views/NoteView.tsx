@@ -1,15 +1,17 @@
-import { SaveOutlined } from '@mui/icons-material';
-import { Button, Grid, Typography } from '@mui/material';
+import { CheckCircle, DeleteOutlined, SaveOutlined, UploadOutlined } from '@mui/icons-material';
+import { Box, Button, Dialog, Grid, Typography } from '@mui/material';
 import { Form, Formik } from 'formik';
+import { useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
-import { startUpdateNote } from '../../store/Notes';
+import { startDeleteNote, startNewNote, startUpdateNote } from '../../store/Notes';
 import { AppTextField } from '../components';
 
 export const NoteView = () => {
-  const { active } = useSelector((state: any) => state.notes);
+  const { active, messageSaved, isSaving } = useSelector((state: any) => state.notes);
+  const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
+  const fileInputRef = useRef<any>();
 
   const initialValues = {
     title: active ? active.title : '',
@@ -21,6 +23,11 @@ export const NoteView = () => {
     body: Yup.string().min(20, String('Must Contain 20 Characters')).required('Enter your body'),
   });
 
+  const conClickDelet = () => {
+    dispatch(startDeleteNote());
+    setOpen(true);
+  };
+
   return (
     <Grid container direction='row' justifyContent='space-between' alignItems='center'>
       <Formik
@@ -30,21 +37,38 @@ export const NoteView = () => {
         validationSchema={validationSchema}
         onSubmit={async (data, { setSubmitting }) => {
           setSubmitting(true);
+          if (!active?.id) return dispatch(startNewNote(data)), setSubmitting(false), setOpen(true);
           dispatch(startUpdateNote(data));
           setSubmitting(false);
+          setOpen(true);
         }}>
         {({ isValid, isSubmitting, setFieldValue, values }) => (
           <Form noValidate autoComplete='on'>
             <Grid container>
               <Grid container justifyContent='space-between'>
-                <Grid item>
+                <Grid item xs={6}>
                   <Typography variant='h4'>{active.date}</Typography>
                 </Grid>
-                <Grid item>
-                  <Button color='primary' sx={{ p: 2 }} variant='outlined' type='submit' disabled={!isValid || isSubmitting}>
-                    <SaveOutlined />
-                    <Typography sx={{ ml: 1 }}>Guardar</Typography>
-                  </Button>
+                <Grid display='contents' item xs={6}>
+                  {!!active?.id && (
+                    <Grid item title='Eliminar Nota'>
+                      <Button color='error' sx={{ p: 2 }} variant='outlined' onClick={conClickDelet} disabled={!isValid || isSubmitting}>
+                        <DeleteOutlined />
+                      </Button>
+                    </Grid>
+                  )}
+                  <Grid item title='Subir Imagenes'>
+                    <input type='file' multiple ref={fileInputRef} onChange={({ target }: any) => console.log(target.files)} style={{ display: 'none' }} />
+                    <Button color='secondary' sx={{ p: 2 }} onClick={() => fileInputRef.current.click()} variant='outlined' disabled={!isValid || isSubmitting || isSaving}>
+                      <UploadOutlined />
+                    </Button>
+                  </Grid>
+                  <Grid item>
+                    <Button color='primary' sx={{ p: 2 }} variant='outlined' type='submit' disabled={!isValid || isSubmitting}>
+                      <SaveOutlined />
+                      <Typography sx={{ ml: 1 }}>{!active?.id ? 'Guardar' : 'Actualizar'}</Typography>
+                    </Button>
+                  </Grid>
                 </Grid>
               </Grid>
               <AppTextField
@@ -80,6 +104,13 @@ export const NoteView = () => {
           </Form>
         )}
       </Formik>
+      <Dialog open={open} onClose={() => setOpen(false)}>
+        <Box>
+          <Typography sx={{ mt: 2 }} justifyContent='center' alignItems='center' display='flex'>
+            <CheckCircle /> {messageSaved}
+          </Typography>
+        </Box>
+      </Dialog>
     </Grid>
   );
 };
